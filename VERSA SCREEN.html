@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Versa Coatings — Shop Board</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  #header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px 10px;
+    border-bottom: 1px solid #21262d;
+    flex-shrink: 0;
+  }
+  #header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  #wordmark {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+  }
+  #wordmark span {
+    color: #e8a440;
+  }
+  #submark {
+    font-size: 13px;
+    color: #8b949e;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  #clock {
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    color: #e6edf3;
+    font-variant-numeric: tabular-nums;
+  }
+  #dateline {
+    font-size: 13px;
+    color: #8b949e;
+    text-align: right;
+    margin-top: 2px;
+  }
+
+  /* ── MAIN CONTENT ── */
+  #main {
+    display: flex;
+    flex: 1;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  /* ── PANELS ── */
+  .panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 16px 20px;
+  }
+  #panel-jobs {
+    flex: 1.1;
+    border-right: 1px solid #21262d;
+  }
+  #panel-staff {
+    flex: 0.9;
+  }
+
+  .panel-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #8b949e;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ── JOB TABLE ── */
+  #jobs-table {
+    width: 100%;
+    border-collapse: collapse;
+    flex: 1;
+    overflow: hidden;
+  }
+  #jobs-table thead th {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #8b949e;
+    padding: 0 10px 10px 0;
+    text-align: left;
+    border-bottom: 1px solid #21262d;
+    white-space: nowrap;
+  }
+  #jobs-table tbody tr {
+    border-bottom: 1px solid #161b22;
+    transition: background 0.2s;
+  }
+  #jobs-table tbody tr:hover {
+    background: #161b22;
+  }
+  #jobs-table tbody td {
+    padding: 10px 10px 10px 0;
+    font-size: 15px;
+    color: #e6edf3;
+    vertical-align: middle;
+  }
+  .job-num {
+    font-size: 13px;
+    font-weight: 600;
+    color: #8b949e;
+    white-space: nowrap;
+  }
+  .job-customer {
+    font-weight: 600;
+    color: #e6edf3;
+  }
+  .job-parts {
+    font-size: 13px;
+    color: #8b949e;
+    margin-top: 2px;
+  }
+  .job-colour {
+    font-size: 13px;
+    color: #8b949e;
+  }
+  .job-notes {
+    font-size: 12px;
+    color: #6e7681;
+    font-style: italic;
+    max-width: 140px;
+  }
+
+  /* Priority badge */
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .badge-hot   { background: #3d1a1a; color: #f85149; border: 1px solid #6e1e1e; }
+  .badge-today { background: #1e2d1e; color: #56d364; border: 1px solid #1f4828; }
+  .badge-queue { background: #1c2128; color: #8b949e; border: 1px solid #21262d; }
+
+  /* Stage pill */
+  .stage {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .stage-blast  { background: #2d2208; color: #e8a440; }
+  .stage-wash   { background: #082030; color: #58a6ff; }
+  .stage-booth  { background: #1a1a3a; color: #a5a0f8; }
+  .stage-cure   { background: #2d0d0d; color: #f85149; }
+  .stage-rack   { background: #0d2218; color: #56d364; }
+  .stage-ship   { background: #1e1e1e; color: #8b949e; }
+
+  /* ── STAFF ASSIGNMENTS ── */
+  #staff-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .staff-card {
+    background: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .staff-station-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .icon-blast  { background: #2d2208; color: #e8a440; }
+  .icon-wash   { background: #082030; color: #58a6ff; }
+  .icon-booth  { background: #1a1a3a; color: #a5a0f8; }
+  .icon-rack   { background: #0d2218; color: #56d364; }
+  .icon-ship   { background: #1e1e1e; color: #8b949e; }
+  .icon-other  { background: #21262d; color: #8b949e; }
+
+  .staff-info { flex: 1; min-width: 0; }
+  .staff-station {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #8b949e;
+  }
+  .staff-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e6edf3;
+    margin-top: 1px;
+  }
+  .staff-task {
+    font-size: 12px;
+    color: #8b949e;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── BOTTOM BANNER ── */
+  #banner {
+    border-top: 1px solid #21262d;
+    padding: 12px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+    min-height: 52px;
+  }
+  #banner-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #e8a440;
+    white-space: nowrap;
+  }
+  #banner-divider {
+    width: 1px;
+    height: 20px;
+    background: #21262d;
+  }
+  #banner-text {
+    font-size: 15px;
+    color: #c9d1d9;
+    flex: 1;
+  }
+  #refresh-note {
+    font-size: 11px;
+    color: #484f58;
+    white-space: nowrap;
+  }
+
+  /* ── LOADING / ERROR ── */
+  .state-msg {
+    font-size: 14px;
+    color: #8b949e;
+    padding: 20px 0;
+    text-align: center;
+  }
+  .error-msg {
+    font-size: 13px;
+    color: #f85149;
+    padding: 20px 0;
+    text-align: center;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #21262d; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ─── CONFIGURATION ──────────────────────────────────────────────────────── -->
+<script>
+  const CONFIG = {
+
+    /* 
+      STEP 1: Publish your Google Sheet as CSV and paste the URL here.
+      
+      How to get the URL:
+        1. Open your Google Sheet
+        2. File → Share → Publish to web
+        3. Choose the TAB NAME (e.g. "Jobs"), format = CSV, click Publish
+        4. Copy that URL and paste it below
+        5. Do the same for the "Staff" and "Banner" tabs
+    */
+
+    JOBS_CSV_URL:   'https://docs.google.com/spreadsheets/d/e/2PACX-1vQmk2LnsMNG8gFyP29iq4UCvMuAYhs8ND5_4BfV2GdNSjA9xYBGhICQ0uBK6adxEBj06pVptc0QNHXs/pub?gid=1669446435&single=true&output=csv',
+    STAFF_CSV_URL:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vQmk2LnsMNG8gFyP29iq4UCvMuAYhs8ND5_4BfV2GdNSjA9xYBGhICQ0uBK6adxEBj06pVptc0QNHXs/pub?gid=1241117931&single=true&output=csv',
+    BANNER_CSV_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQmk2LnsMNG8gFyP29iq4UCvMuAYhs8ND5_4BfV2GdNSjA9xYBGhICQ0uBK6adxEBj06pVptc0QNHXs/pub?gid=279062649&single=true&output=csv',
+
+    /* How often to refresh data from the sheet (milliseconds). 60000 = 1 minute */
+    REFRESH_INTERVAL_MS: 60000,
+
+  };
+</script>
+<!-- ──────────────────────────────────────────────────────────────────────────── -->
+
+<!-- HEADER -->
+<div id="header">
+  <div id="header-left">
+    <div id="wordmark">VERSA <span>COATINGS</span></div>
+    <div id="submark">Shop Floor</div>
+  </div>
+  <div style="text-align:right;">
+    <div id="clock">--:--</div>
+    <div id="dateline">--</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- LEFT: JOB QUEUE -->
+  <div class="panel" id="panel-jobs">
+    <div class="panel-title">Today's Job Queue</div>
+    <table id="jobs-table">
+      <thead>
+        <tr>
+          <th style="width:70px">Priority</th>
+          <th style="width:90px">Job #</th>
+          <th>Customer / Parts</th>
+          <th style="width:110px">Stage</th>
+          <th>Colour</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="jobs-body">
+        <tr><td colspan="6" class="state-msg">Loading jobs…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RIGHT: STAFF ASSIGNMENTS -->
+  <div class="panel" id="panel-staff">
+    <div class="panel-title">Staff Assignments</div>
+    <div id="staff-grid">
+      <div class="state-msg">Loading assignments…</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM BANNER -->
+<div id="banner">
+  <div id="banner-label">Note</div>
+  <div id="banner-divider"></div>
+  <div id="banner-text">Loading…</div>
+  <div id="refresh-note">Refreshes every minute</div>
+</div>
+
+<script>
+/* ── CLOCK ──────────────────────────────────────────────────────────────── */
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2, '0');
+  const m = now.getMinutes().toString().padStart(2, '0');
+  document.getElementById('clock').textContent = h + ':' + m;
+  document.getElementById('dateline').textContent = now.toLocaleDateString('en-CA', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+}
+updateClock();
+setInterval(updateClock, 10000);
+
+/* ── CSV PARSER ─────────────────────────────────────────────────────────── */
+function parseCSV(text) {
+  const lines = text.trim().split('\n').filter(l => l.trim());
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+  return lines.slice(1).map(line => {
+    const vals = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
+      else { cur += c; }
+    }
+    vals.push(cur.trim());
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = (vals[i] || '').replace(/^"|"$/g, '').trim());
+    return obj;
+  });
+}
+
+async function fetchCSV(url) {
+  const r = await fetch(url + '&t=' + Date.now(), { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return parseCSV(await r.text());
+}
+
+/* ── STAGE PILL ─────────────────────────────────────────────────────────── */
+function stageClass(stage) {
+  const s = (stage || '').toLowerCase();
+  if (s.includes('blast'))  return 'stage stage-blast';
+  if (s.includes('wash'))   return 'stage stage-wash';
+  if (s.includes('booth') || s.includes('spray')) return 'stage stage-booth';
+  if (s.includes('cure') || s.includes('oven'))   return 'stage stage-cure';
+  if (s.includes('rack') || s.includes('cool'))   return 'stage stage-rack';
+  if (s.includes('ship') || s.includes('ready'))  return 'stage stage-ship';
+  return 'stage stage-ship';
+}
+
+/* ── PRIORITY BADGE ─────────────────────────────────────────────────────── */
+function priorityBadge(p) {
+  const s = (p || '').toLowerCase();
+  if (s === 'hot' || s === 'rush') return '<span class="badge badge-hot">HOT</span>';
+  if (s === 'today')               return '<span class="badge badge-today">TODAY</span>';
+  return '<span class="badge badge-queue">' + (p || 'QUEUE').toUpperCase() + '</span>';
+}
+
+/* ── STATION ICON ────────────────────────────────────────────────────────── */
+function stationIcon(station) {
+  const s = (station || '').toLowerCase();
+  if (s.includes('blast'))  return { cls: 'icon-blast', emoji: '💨' };
+  if (s.includes('wash'))   return { cls: 'icon-wash',  emoji: '🚿' };
+  if (s.includes('booth') || s.includes('spray')) return { cls: 'icon-booth', emoji: '🎨' };
+  if (s.includes('rack') || s.includes('unrack')) return { cls: 'icon-rack', emoji: '🔩' };
+  if (s.includes('ship') || s.includes('receiv')) return { cls: 'icon-ship', emoji: '📦' };
+  return { cls: 'icon-other', emoji: '⚙️' };
+}
+
+/* ── RENDER JOBS ─────────────────────────────────────────────────────────── */
+function renderJobs(rows) {
+  const tbody = document.getElementById('jobs-body');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="state-msg">No jobs loaded — check your sheet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>${priorityBadge(r['Priority'])}</td>
+      <td class="job-num">${r['Job #'] || '—'}</td>
+      <td>
+        <div class="job-customer">${r['Customer'] || '—'}</div>
+        <div class="job-parts">${r['Parts'] || ''}</div>
+      </td>
+      <td><span class="${stageClass(r['Stage'])}">${r['Stage'] || '—'}</span></td>
+      <td class="job-colour">${r['Colour'] || '—'}</td>
+      <td class="job-notes">${r['Notes'] || ''}</td>
+    </tr>
+  `).join('');
+}
+
+/* ── RENDER STAFF ────────────────────────────────────────────────────────── */
+function renderStaff(rows) {
+  const grid = document.getElementById('staff-grid');
+  if (!rows.length) {
+    grid.innerHTML = '<div class="state-msg">No staff data — check your sheet.</div>';
+    return;
+  }
+  grid.innerHTML = rows.map(r => {
+    const icon = stationIcon(r['Station']);
+    return `
+      <div class="staff-card">
+        <div class="staff-station-icon ${icon.cls}" aria-hidden="true">${icon.emoji}</div>
+        <div class="staff-info">
+          <div class="staff-station">${r['Station'] || '—'}</div>
+          <div class="staff-name">${r['Name'] || '—'}</div>
+          <div class="staff-task">${r['Task / Job Focus'] || ''}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ── RENDER BANNER ───────────────────────────────────────────────────────── */
+function renderBanner(rows) {
+  const el = document.getElementById('banner-text');
+  if (rows.length && rows[0]['Message']) {
+    el.textContent = rows[0]['Message'];
+  } else {
+    el.textContent = 'Good work today — quality first, every part.';
+  }
+  if (rows.length && rows[0]['Label']) {
+    document.getElementById('banner-label').textContent = rows[0]['Label'];
+  }
+}
+
+/* ── FETCH & REFRESH ─────────────────────────────────────────────────────── */
+function showError(id, msg) {
+  document.getElementById(id).innerHTML =
+    '<div class="error-msg">⚠ ' + msg + '</div>';
+}
+
+const DEMO_MODE = CONFIG.JOBS_CSV_URL === 'YOUR_JOBS_TAB_CSV_URL_HERE';
+
+function loadDemoData() {
+  renderJobs([
+    { 'Priority': 'HOT',   'Job #': 'VC-241', 'Customer': 'GeoSpectrum',  'Parts': '22 brackets',  'Stage': 'Booth',  'Colour': 'SW Gloss Black', 'Notes': 'Due today — priority' },
+    { 'Priority': 'TODAY', 'Job #': 'VC-243', 'Customer': 'Kraken',       'Parts': '8 enclosures', 'Stage': 'Blast',  'Colour': 'RAL 9006',       'Notes': '' },
+    { 'Priority': 'TODAY', 'Job #': 'VC-244', 'Customer': 'Metro Transit', 'Parts': '40 handrails', 'Stage': 'Wash',   'Colour': 'RAL 7035',       'Notes': 'Inspect welds before booth' },
+    { 'Priority': 'QUEUE', 'Job #': 'VC-245', 'Customer': 'Parks HRM',    'Parts': '12 panels',    'Stage': 'Rack',   'Colour': 'Forest Green',   'Notes': 'Ready to ship Fri' },
+    { 'Priority': 'QUEUE', 'Job #': 'VC-246', 'Customer': 'Davie Yarn',   'Parts': '6 frames',     'Stage': 'Queue',  'Colour': 'Satin Black',    'Notes': '' },
+  ]);
+  renderStaff([
+    { 'Station': 'Blast Room 1', 'Name': 'Derek',   'Task / Job Focus': 'VC-243 enclosures → then VC-246 frames' },
+    { 'Station': 'Blast Room 2', 'Name': 'Kyle',    'Task / Job Focus': 'VC-244 handrails — check surface before wash' },
+    { 'Station': 'Wash Booth',   'Name': 'Jay',     'Task / Job Focus': 'VC-244 after blast, stage for booth by 10am' },
+    { 'Station': 'Spray Booth',  'Name': 'Matt',    'Task / Job Focus': 'VC-241 first — HOT. Then VC-243.' },
+    { 'Station': 'Racking',      'Name': 'Connor',  'Task / Job Focus': 'Unrack VC-239 (done), rack VC-245 for ship' },
+    { 'Station': 'Shipping',     'Name': 'Derek*',  'Task / Job Focus': 'VC-239 out by 2pm. Receive VC-247 parts.' },
+  ]);
+  renderBanner([{ 'Label': 'Today\'s Focus', 'Message': 'VC-241 GeoSpectrum is HOT — booth first, nothing jumps ahead of it. Ship VC-239 by 2pm.' }]);
+  document.getElementById('banner-label').textContent = 'Today\'s Focus';
+}
+
+async function loadData() {
+  if (DEMO_MODE) {
+    loadDemoData();
+    document.getElementById('refresh-note').textContent = 'Demo mode — add your Sheet URLs to go live';
+    return;
+  }
+
+  try {
+    const jobs = await fetchCSV(CONFIG.JOBS_CSV_URL);
+    renderJobs(jobs);
+  } catch(e) {
+    showError('jobs-body', 'Could not load jobs sheet. Check your CSV URL.');
+    console.error('Jobs fetch error:', e);
+  }
+
+  try {
+    const staff = await fetchCSV(CONFIG.STAFF_CSV_URL);
+    renderStaff(staff);
+  } catch(e) {
+    showError('staff-grid', 'Could not load staff sheet. Check your CSV URL.');
+    console.error('Staff fetch error:', e);
+  }
+
+  try {
+    const banner = await fetchCSV(CONFIG.BANNER_CSV_URL);
+    renderBanner(banner);
+  } catch(e) {
+    document.getElementById('banner-text').textContent = 'Quality first — every part, every time.';
+    console.error('Banner fetch error:', e);
+  }
+
+  document.getElementById('refresh-note').textContent =
+    'Last updated ' + new Date().toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' });
+}
+
+loadData();
+setInterval(loadData, CONFIG.REFRESH_INTERVAL_MS);
+</script>
+</body>
+</html>
