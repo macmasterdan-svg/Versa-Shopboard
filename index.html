@@ -538,7 +538,7 @@ async function loadData() {
   }
 
   try {
-    const jobs = await fetchCSV(CONFIG.JOBS_CSV_URL);
+   const jobs = await fetchCSV(CONFIG.JOBS_CSV_URL, 2);
     renderJobs(jobs);
   } catch(e) {
     showError('jobs-body', 'Could not load jobs sheet. Check your CSV URL.');
@@ -546,7 +546,7 @@ async function loadData() {
   }
 
   try {
-    const staff = await fetchCSV(CONFIG.STAFF_CSV_URL);
+    const staff = await fetchCSV(CONFIG.STAFF_CSV_URL, 2);
     renderStaff(staff);
   } catch(e) {
     showError('staff-grid', 'Could not load staff sheet. Check your CSV URL.');
