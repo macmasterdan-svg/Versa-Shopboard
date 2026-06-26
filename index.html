@@ -388,7 +388,7 @@ updateClock();
 setInterval(updateClock, 10000);
 
 /* ── CSV PARSER ─────────────────────────────────────────────────────────── */
-function parseCSV(text, headerRow = 0) {
+function parseCSV(text, headerRow = 2) {
   const lines = text.trim().split('\n').filter(l => l.trim());
   if (lines.length < 2) return [];
   const headers = lines[headerRow].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
